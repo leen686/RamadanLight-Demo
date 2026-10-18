@@ -1,0 +1,51 @@
+/* Demo-only additions: the "try it" box on the login page. Uses the original palette. */
+.demo-box {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px dashed #e2d2bf;
+  border-radius: 14px;
+  background: #fff8ef;
+  color: #7a6a5f;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.demo-box b { color: #6b4f3b; }
+.demo-box .demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.demo-box .demo-actions .btn {
+  flex: 1 1 140px;
+  text-align: center;
+  font-size: 13px;
+  height: 40px;
+  line-height: 36px;
+  padding: 0 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.demo-box .demo-reset {
+  display: inline-block;
+  margin-top: 8px;
+  color: #b8832c;
+  font-size: 12px;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.demo-error {
+  color: red;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Phone-only fix: keep the navbar buttons on one line (desktop is unchanged). */
+@media (max-width: 480px) {
+  .nav-links .btn { white-space: nowrap; padding: 0 14px; }
+  .nav-links { gap: 8px; }
+}

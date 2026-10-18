@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramadan Light | Login</title>
+  <link rel="stylesheet" href="css.css" />
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="wrap nav-row">
+      <a class="brand" href="index.html">
+        <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+        <div class="brand-text">
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a class="link" href="index.html">Home</a>
+        <a class="btn btn-primary" href="signup.html">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-bg">
+    <div class="wrap">
+      <div class="form-card">
+        <h1 class="form-title">Login</h1>
+        <p class="form-sub">Welcome back! Let’s keep it healthy today.</p>
+
+        <p class="demo-error" id="loginError" hidden></p>
+
+        <form method="POST" id="loginForm">
+          <div class="field">
+            <label>Email Address</label>
+            <div class="input-row">
+              <span class="mini-icon">✉</span>
+              <input type="email" name="email" placeholder="Enter your email" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Password</label>
+            <div class="input-row">
+              <span class="mini-icon">🔒</span>
+              <input type="password" name="password" placeholder="Enter your password" required />
+            </div>
+          </div>
+
+          <button class="btn btn-primary full" type="submit" name="login">
+            Login →
+          </button>
+        </form>
+
+        <div class="divider">
+          <div class="line"></div>
+          <div class="divider-text">New to Ramadan Light?</div>
+          <div class="line"></div>
+        </div>
+
+        <div class="center">
+          <a class="link" href="signup.html">Sign up</a>
+        </div>
+
+        <div class="demo-box">
+          <b>Try the demo</b> — log in with a sample account (password <b>demo1234</b>), or sign up with any email.
+          Everything you do is saved only in your browser.
+          <div class="demo-actions">
+            <button type="button" class="btn btn-outline" data-demo="lina@ramadanlight.demo">Log in as a user</button>
+            <button type="button" class="btn btn-outline" data-demo="admin@ramadanlight.demo">Log in as admin</button>
+          </div>
+          <button type="button" class="demo-reset" id="resetDemo">Reset demo data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('loginForm');
+      var errorBox = document.getElementById('loginError');
+
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.hidden = !msg;
+      }
+
+      var fromUrl = RL.param('error');
+      if (fromUrl) showError(fromUrl);
+
+      function doLogin(email, password) {
+        var res = RL.login(email, password);
+        if (res.error) return showError(res.error);
+        location.href = res.user.userType === 'admin' ? 'admin.html' : 'user.html';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        doLogin(form.email.value, form.password.value);
+      });
+
+      document.querySelectorAll('[data-demo]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          form.email.value = b.getAttribute('data-demo');
+          form.password.value = 'demo1234';
+          doLogin(form.email.value, form.password.value);
+        });
+      });
+
+      document.getElementById('resetDemo').addEventListener('click', function () {
+        if (confirm('Reset all demo recipes, likes, comments and accounts to the original sample data?')) {
+          RL.reset();
+          showError('');
+          alert('Demo data has been reset.');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

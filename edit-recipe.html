@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramadan Light | Edit Recipe</title>
+  <link rel="stylesheet" href="css.css" />
+</head>
+
+<body id="edit-recipe-page">
+
+    <div class="navbar">
+    <div class="wrap nav-row">
+      <a class="brand" href="user.html">
+        <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+        <div class="brand-text">
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a class="link" href="user.html">Home</a>
+        <a class="btn btn-primary" href="index.html" data-signout>Log out</a>
+      </div>
+    </div>
+  </div>
+<h1 id="edit-recipe-title">Edit Recipe</h1>
+
+ <main class="page" id="edit-recipe-content">
+<form id="edit-recipe-form" method="POST" enctype="multipart/form-data">
+
+<!-- name -->
+<label>Recipe name *</label>
+<input type="text" name="name" required>
+
+<!-- category -->
+<label>Category *</label>
+<select name="category" required></select>
+
+<!-- description -->
+<label>Description *</label>
+<textarea name="description" required></textarea>
+
+<!-- photo -->
+<label>Photo </label>
+
+<div id="edit-recipe-photo-row">
+  <input type="file" id="edit-recipe-photo" name="photo" accept="image/*" >
+
+  <div id="edit-recipe-current-photo">
+    <span>Current Photo:</span>
+
+    <img
+      src=""
+      alt="Recipe photo"
+      id="edit-recipe-photo-preview"
+    >
+  </div>
+</div>
+
+<!-- ingredients -->
+<h3>Ingredients *</h3>
+
+<div id="edit-recipe-ingredients-container"></div>
+
+<!-- steps -->
+<h3>Steps *</h3>
+
+<div id="edit-recipe-steps-container"></div>
+
+<!-- video -->
+<label>Video or URL (optional)</label>
+
+<div id="edit-recipe-video-row">
+  <input type="file" id="edit-recipe-video-file" name="video_file" accept="video/*">
+
+  <div id="edit-recipe-current-video">
+    <span>Current Video:</span>
+    <span id="currentVideo"></span>
+  </div>
+</div>
+
+<input
+  type="url"
+  id="edit-recipe-video-url"
+  name="video_url"
+  placeholder="https://youtube.com/..."
+>
+
+<!-- actions -->
+      <div class="actions" id="edit-recipe-actions">
+        <button type="submit" class="edit-recipe-btn-primary" id="edit-recipe-save">
+          Save
+        </button>
+        <a href="my-recipes.html" class="edit-recipe-btn-secondary" id="cancel-edit-recipe">
+          Cancel
+        </a>
+      </div>
+
+</form>
+ </main>
+
+<div class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-mark">☾</div>
+      <div>© 2026 Ramadan Light — Nourishing bodies and souls.</div>
+    </div>
+  </div>
+
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/recipe-form.js"></script>
+  <script>
+    (function () {
+      var esc = RL.esc;
+      var me = RL.requireUser('user', 'You must login first');
+      var recipeID = parseInt(RL.param('id'), 10);
+      var recipe = RL.recipe(recipeID);
+      var main = document.getElementById('edit-recipe-content');
+
+      if (!recipeID) { location.replace('my-recipes.html'); return; }
+      if (!recipe) { main.textContent = 'Recipe not found'; return; }
+      if (recipe.userID !== me.id) { main.textContent = 'You are not allowed to edit this recipe'; return; }
+
+      var form = document.getElementById('edit-recipe-form');
+      form.elements['name'].value = recipe.name;
+      form.elements['description'].value = recipe.description;
+
+      var select = form.elements['category'];
+      RL.db().categories.forEach(function (c) {
+        var o = document.createElement('option');
+        o.value = c.id; o.textContent = c.categoryName;
+        if (c.id === recipe.categoryID) o.selected = true;
+        select.appendChild(o);
+      });
+
+      document.getElementById('edit-recipe-photo-preview').src = RL.img(recipe.photoFileName);
+
+      document.getElementById('edit-recipe-ingredients-container').innerHTML =
+        RL.ingredients(recipeID).map(function (ing, i) {
+          return `
+  <div class="ingredient-row">
+    <span class="ingredient-number">${i + 1}</span>
+
+    <input
+      type="text"
+      name="ingredient_name[]"
+      class="ingredient-name"
+      value="${esc(ing.ingredientName)}"
+      required
+    >
+
+    <input
+      type="text"
+      name="ingredient_qty[]"
+      class="ingredient-qty"
+      value="${esc(ing.ingredientQuantity)}"
+      required
+    >
+  </div>`;
+        }).join('');
+
+      document.getElementById('edit-recipe-steps-container').innerHTML =
+        RL.instructions(recipeID).map(function (step, i) {
+          return `
+  <div class="step-row">
+    <span class="step-number">${i + 1}</span>
+
+    <input
+      type="text"
+      name="step[]"
+      class="step-input"
+      value="${esc(step.step)}"
+      required
+    >
+  </div>`;
+        }).join('');
+
+      var current = document.getElementById('currentVideo');
+      var path = recipe.videoFilePath || '';
+      if (!path) {
+        current.textContent = 'No Video Uploaded';
+      } else if (/^https?:/i.test(path)) {
+        current.innerHTML = '<a href="' + esc(path) + '" target="_blank">View Video Link</a>';
+        form.elements['video_url'].value = path;
+      } else {
+        current.innerHTML = '<video width="200" controls><source id="currentVideoSrc">Your browser does not support video.</video>';
+        RL.videoHref(recipe).then(function (href) {
+          document.getElementById('currentVideoSrc').src = href;
+          current.querySelector('video').load();
+        });
+      }
+
+      RLRecipeForm(form, me, recipe);
+    })();
+  </script>
+</body>
+</html>

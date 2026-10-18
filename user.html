@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Page • Ramadan Light</title>
+  <link rel="stylesheet" href="css.css" />
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="wrap nav-row">
+      <div class="brand">
+        <img
+          src="images/log.png"
+          alt="Ramadan Light logo"
+          class="brand-logo"
+        />
+        <div class="brand-text">
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a class="btn btn-primary" href="index.html" data-signout>Sign Out</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="userContainer userBackground">
+    <!-- Top Bar -->
+    <section class="userTopBar">
+      <div class="userTopLeft">
+        <img class="userAvatar" id="userAvatar" src="images/avatar.png" alt="Profile image" />
+        <div>
+          <p class="userTextSecondary userMarginBottomSmall">
+            Welcome back 👋
+          </p>
+          <h1 class="userTitleMain userMarginBottomSmall" id="welcomeName"></h1>
+        </div>
+      </div>
+
+      <div class="userTopRight">
+        <div class="userStatsBox">
+          <span class="userStatsLabel">Recipes</span>
+          <span class="userStatsValue" id="totalRecipes">0</span>
+        </div>
+
+        <div class="userStatsBox">
+          <span class="userStatsLabel">Likes</span>
+          <span class="userStatsValue" id="totalLikes">0</span>
+        </div>
+
+        <a class="userButtonPrimary" href="my-recipes.html">My recipes</a>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section class="userCard userMarginTop">
+      <div class="userSectionHeader">
+        <h2 class="userTitleSection">Profile</h2>
+      </div>
+
+      <div class="userInfoPills">
+        <div class="userInfoPill">
+          <span class="userTextSecondary userTextSmall">First name</span>
+          <span class="userTextStrong" id="profileFirst"></span>
+        </div>
+
+        <div class="userInfoPill">
+          <span class="userTextSecondary userTextSmall">Last name</span>
+          <span class="userTextStrong" id="profileLast"></span>
+        </div>
+
+        <div class="userInfoPill userInfoPillWide">
+          <span class="userTextSecondary userTextSmall">Email</span>
+          <span class="userTextStrong" id="profileEmail"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explore Recipes -->
+    <section class="userCard userMarginTop">
+      <div class="userSectionHeader">
+        <div>
+          <h2 class="userTitleSection">Explore recipes</h2>
+          <p class="userTextSecondary userTextSmall userMarginTopSmall">
+            Pick a category to explore tasty options.
+          </p>
+        </div>
+
+        <form class="userFilterBar" id="recipeFilterForm">
+          <select class="userSelectField" name="category" id="categorySelect">
+            <option value="all">All Categories</option>
+          </select>
+        </form>
+      </div>
+
+      <div class="userRecipeList" id="recipesContainer"></div>
+    </section>
+
+    <!-- My Favourites -->
+    <section class="userCard userMarginTop">
+      <div class="userSectionHeader">
+        <div>
+          <h2 class="userTitleSection">My favourites</h2>
+          <p class="userTextSecondary userTextSmall userMarginTopSmall">
+            Your saved recipes, ready whenever you are.
+          </p>
+        </div>
+      </div>
+
+      <div id="favouritesContainer"></div>
+    </section>
+  </main>
+
+  <div class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-mark">☾</div>
+      <div>©️ 2026 Ramadan Light — Nourishing bodies and souls.</div>
+    </div>
+  </div>
+
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    (function () {
+      var esc = RL.esc, img = RL.img;
+      var me = RL.requireUser('user', 'You must login as a regular user first');
+
+      function categoryClass(name) {
+        name = String(name).trim().toLowerCase();
+        if (name === 'iftar') return 'userTagIftar';
+        if (name === 'suhoor') return 'userTagSuhoor';
+        if (name === 'snacks') return 'userTagSnacks';
+        return '';
+      }
+
+      // Top bar + profile
+      var myRecipes = RL.db().recipes.filter(function (r) { return r.userID === me.id; });
+      var totalLikes = myRecipes.reduce(function (n, r) { return n + RL.likesCount(r.id); }, 0);
+      document.getElementById('userAvatar').src = img(me.photoFileName);
+      document.getElementById('welcomeName').textContent = me.firstName;
+      document.getElementById('totalRecipes').textContent = myRecipes.length;
+      document.getElementById('totalLikes').textContent = totalLikes;
+      document.getElementById('profileFirst').textContent = me.firstName;
+      document.getElementById('profileLast').textContent = me.lastName;
+      document.getElementById('profileEmail').textContent = me.emailAddress;
+
+      // Category filter
+      var select = document.getElementById('categorySelect');
+      RL.db().categories.forEach(function (c) {
+        var o = document.createElement('option');
+        o.value = c.id; o.textContent = c.categoryName;
+        select.appendChild(o);
+      });
+
+      function renderRecipes(recipes) {
+        var html = '';
+        if (!recipes.length) {
+          html = '<p class="userTextSecondary">No recipes found for this category.</p>';
+        } else {
+          recipes.forEach(function (recipe) {
+            html += `
+            <article class="userRecipeRow">
+              <a href="viewrecipe.html?id=${recipe.id}">
+                <img
+                  class="userRecipeImage"
+                  src="${esc(img(recipe.photoFileName))}"
+                  alt="${esc(recipe.name)}"
+                />
+              </a>
+
+              <div class="userRecipeMain">
+                <a class="userRecipeTitle" href="viewrecipe.html?id=${recipe.id}">
+                  ${esc(recipe.name)}
+                </a>
+
+                <div class="userRecipeMeta">
+                  <span class="userCategoryTag ${categoryClass(recipe.categoryName)}">
+                    ${esc(recipe.categoryName)}
+                  </span>
+                  <span class="userMetaDot"></span>
+
+                  <span class="userCreatorMini">
+                    <img
+                      class="userCreatorAvatar"
+                      src="${esc(img(recipe.creatorPhoto))}"
+                      alt="Creator photo"
+                    />
+                    <span>${esc(recipe.firstName + ' ' + recipe.lastName)}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="userLikesBox">
+                <span class="userLikesLabel">Likes</span>
+                <span class="userLikesValue">${recipe.likesCount}</span>
+              </div>
+            </article>`;
+          });
+        }
+        document.getElementById('recipesContainer').innerHTML = html;
+      }
+
+      select.addEventListener('change', function () { renderRecipes(RL.recipes(select.value)); });
+      renderRecipes(RL.recipes('all'));
+
+      // Favourites
+      function renderFavourites() {
+        var favs = RL.db().favourites
+          .filter(function (f) { return f.userID === me.id; })
+          .map(function (f) { return RL.recipe(f.recipeID); })
+          .filter(Boolean)
+          .sort(function (a, b) { return b.id - a.id; });
+        var box = document.getElementById('favouritesContainer');
+        if (!favs.length) {
+          box.innerHTML = '<p class="userTextSecondary" id="noFavouritesMessage">You do not have any favourites yet.</p>';
+          return;
+        }
+        box.innerHTML = '<div class="userFavoritesGrid" id="favouritesGrid">' + favs.map(function (fav) {
+          return `
+              <article class="userFavoriteCard favouriteCard" id="favourite-${fav.id}">
+                <a href="viewrecipe.html?id=${fav.id}">
+                  <img
+                    class="userFavoriteImage"
+                    src="${esc(img(fav.photoFileName))}"
+                    alt="${esc(fav.name)}"
+                  />
+                </a>
+
+                <div class="userFavoriteMain">
+                  <a class="userRecipeTitle" href="viewrecipe.html?id=${fav.id}">
+                    ${esc(fav.name)}
+                  </a>
+                  <span class="userTextSecondary userTextSmall">Saved recipe</span>
+                </div>
+
+                <a
+                  class="userButtonRemove removeFavouriteBtn"
+                  href="#"
+                  data-recipe-id="${fav.id}"
+                >
+                  Remove
+                </a>
+              </article>`;
+        }).join('') + '</div>';
+      }
+      renderFavourites();
+
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.removeFavouriteBtn');
+        if (!btn) return;
+        e.preventDefault();
+        if (RL.removeFavourite(me.id, parseInt(btn.getAttribute('data-recipe-id'), 10))) renderFavourites();
+      });
+    })();
+  </script>
+</body>
+</html>

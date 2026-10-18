@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramadan Light | Add Recipe</title>
+  <link rel="stylesheet" href="css.css" />
+</head>
+<body id="add-recipe-page">
+
+ <div class="navbar">
+    <div class="wrap nav-row">
+      <a class="brand" href="user.html">
+        <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+        <div class="brand-text">
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a class="link" href="user.html">Home</a>
+        <a class="btn btn-primary" href="index.html" data-signout>Log out</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  
+ <h1 id="add-recipe-title">Add New Recipe</h1>
+ 
+  <main class="page" id="add-recipe-content">
+
+    <form class="card" id="add-recipe-form" method="POST" enctype="multipart/form-data" >
+      
+      <label for="add-recipe-name">Recipe name *</label>
+      <input type="text" name="name" id="add-recipe-name" required />
+
+      <label for="add-recipe-category">Category *</label>
+      <select id="add-recipe-category" name="category" required>
+            <option value="">Select Category</option>
+            <option value="1">
+                Iftar
+            </option>
+            <option value="2">
+                Suhoor
+            </option>
+            <option value="3">
+                Snacks
+            </option>
+      </select>
+
+      <label for="add-recipe-description">Description *</label>
+      <textarea id="add-recipe-description" rows="3" name="description" required></textarea>
+
+      <label for="add-recipe-photo">Photo *</label>
+      <input type="file" id="add-recipe-photo" accept="image/*" name="photo" required />
+
+      <!-- Ingredients -->
+      <label>Ingredients *</label>
+<div id="add-recipe-ingredients-container">
+  <div class="ingredient-row">
+    <span class="ingredient-number">1.</span>
+    <input
+      type="text"
+      class="ingredient-name"
+      name="ingredient_name[]"
+      placeholder="Ingredient name"
+      required
+    />
+    <input
+      type="text"
+      class="ingredient-qty"
+      name="ingredient_qty[]"
+      placeholder="Quantity"
+      required
+    />
+  </div>
+</div>
+
+<button
+  type="button"
+  class="add-recipe-btn-secondary"
+  id="add-ingredient-btn">
+  + Add new ingredient
+</button>
+
+      <!-- Instructions -->
+      <label>Instructions *</label>
+<div id="add-recipe-steps-container">
+  <div class="step-row">
+    <span class="step-number">1.</span>
+    <input
+      type="text"
+      class="step-input"
+       name="step[]"
+      placeholder="Step description"
+      required
+    />
+  </div>
+</div>
+
+<button
+  type="button"
+  class="add-recipe-btn-secondary"
+  id="add-step-btn">
+  + Add new step
+</button>
+
+	  <label for="add-recipe-video-file">Video or URL (optional)</label>
+		<input
+		type="file"
+		id="add-recipe-video-file"
+                name="video_file"
+		accept="video/*"
+		/>
+      <input
+        type="url"
+        id="add-recipe-video"
+        name="video_url"
+        placeholder="https://youtube.com/..." />
+
+      <div class="actions" id="add-recipe-actions">
+        <button type="submit" class="add-recipe-btn-primary" id="add-recipe-submit-recipe">
+          Add Recipe
+        </button>
+        <a href="my-recipes.html" class="add-recipe-btn-secondary" id="cancel-add-recipe">
+          Cancel
+        </a>
+      </div>
+
+    </form>
+  </main>
+
+  <div class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-mark">☾</div>
+      <div>© 2026 Ramadan Light — Nourishing bodies and souls.</div>
+    </div>
+  </div>
+  
+  <script src="js/js.js"></script>
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/recipe-form.js"></script>
+  <script>
+    (function () {
+      var me = RL.requireUser('user', 'You must login first');
+      RLRecipeForm(document.getElementById('add-recipe-form'), me, null);
+    })();
+  </script>
+</body>
+</html>
+

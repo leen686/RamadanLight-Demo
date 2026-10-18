@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramadan Light | View Recipe</title>
+  <link rel="stylesheet" href="css2.css" />
+</head>
+<body class="viewrecipe-page">
+
+  <div class="navbar">
+    <div class="wrap nav-row">
+      <a class="brand home-link" href="user.html">
+        <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+        <div>
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a class="link home-link" href="user.html">Home</a>
+        <a class="btn btn-primary" href="index.html" data-signout>Log out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-bg">
+    <div class="wrap">
+      <div class="card" id="recipeCard"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-mark">☾</div>
+      <div>© 2026 Ramadan Light — Nourishing bodies and souls.</div>
+    </div>
+  </div>
+
+  <script src="js/seed.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    (function () {
+      var esc = RL.esc, img = RL.img;
+      var me = RL.requireUser(null, 'You must login first');
+      var card = document.getElementById('recipeCard');
+      var recipeID = parseInt(RL.param('id'), 10);
+
+      if (me.userType === 'admin') {
+        document.querySelectorAll('.home-link').forEach(function (a) { a.href = 'admin.html'; });
+      }
+
+      if (!recipeID) { card.innerHTML = '<p class="muted">Recipe ID is missing.</p>'; return; }
+      var recipe = RL.recipe(recipeID);
+      if (!recipe) { card.innerHTML = '<p class="muted">Recipe not found.</p>'; return; }
+
+      var creator = RL.user(recipe.userID) || {};
+      var isCreator = me.id === recipe.userID;
+      var isAdmin = me.userType === 'admin';
+
+      function actionButton(done, doneText, doneClass, action, text, extraClass) {
+        if (done) return `<button class="btn ${doneClass}" disabled>${doneText}</button>`;
+        return `<button class="btn btn-outline ${extraClass || ''} ajax-action"
+                      data-action="${action}"
+                      data-success-text="${doneText}"
+                      data-success-class="${doneClass}">
+                ${text}
+              </button>`;
+      }
+
+      var html = '';
+      if (!isCreator && !isAdmin) {
+        html += `
+          <div class="top-actions">
+            ${actionButton(RL.has('favourites', me.id, recipeID), 'Favourited ♥', 'btn-active', 'favourite', 'Favourite ♥')}
+            ${actionButton(RL.has('likes', me.id, recipeID), 'Liked 👍', 'btn-active', 'like', 'Like 👍')}
+            ${actionButton(RL.has('reports', me.id, recipeID), 'Reported ⚑', 'btn-active-danger', 'report', 'Report ⚑', 'btn-danger')}
+          </div>`;
+      }
+
+      html += `
+        <h1 class="title">${esc(recipe.name)}</h1>
+        <img class="recipe-photo" src="${esc(img(recipe.photoFileName))}" alt="Recipe photo">
+
+        <div class="creator">
+          <span class="label">Recipe Creator:</span>
+          <div class="creator-box">
+            <img class="avatar"
+                 src="${esc(img(creator.photoFileName))}"
+                 alt="Creator photo">
+            <span class="creator-name">
+              ${esc((creator.firstName || '') + ' ' + (creator.lastName || ''))}
+            </span>
+          </div>
+        </div>
+
+        <div class="box">
+          <h2 class="section-title">Details</h2>
+          <p><b>Category:</b> ${esc(RL.category(recipe.categoryID).categoryName)}</p>
+          <p class="muted">${esc(recipe.description)}</p>
+        </div>
+
+        <div class="box">
+          <h2 class="section-title">Ingredients</h2>
+          <ul class="list">
+            ${RL.ingredients(recipeID).map(function (i) {
+              return `<li>
+                  ${esc(i.ingredientName)} —
+                  ${esc(i.ingredientQuantity)}
+                </li>`;
+            }).join('')}
+          </ul>
+        </div>
+
+        <div class="box">
+          <h2 class="section-title">Instructions</h2>
+          <ol class="list">
+            ${RL.instructions(recipeID).map(function (s) { return `<li>${esc(s.step)}</li>`; }).join('')}
+          </ol>
+        </div>`;
+
+      if (recipe.videoFilePath) {
+        var isUrl = /^https?:/i.test(recipe.videoFilePath);
+        html += `
+          <div class="box" id="videoSection">
+            <h2 class="section-title">Video</h2>
+            <p class="muted">Video:</p>
+            <a class="link" id="videoLink" href="#" target="_blank" rel="noopener">
+              ${esc(isUrl ? recipe.videoFilePath : 'videos/' + RL.videoName(recipe))}
+            </a>
+          </div>`;
+      }
+
+      var comments = RL.db().comments
+        .filter(function (c) { return c.recipeID === recipeID; })
+        .sort(function (a, b) { return b.id - a.id; });
+
+      html += `
+        <div class="box">
+          <h2 class="section-title">Comments</h2>
+
+          <form class="comment-form" id="commentForm" method="post">
+            <input class="input" type="text" name="commentText" placeholder="Write a comment..." required>
+            <button class="btn btn-primary" type="submit">Add Comment</button>
+          </form>
+
+          ${comments.length ? comments.map(function (c) {
+            var u = RL.user(c.userID) || { firstName: 'Former', lastName: 'user' };
+            return `
+              <div class="comment">
+                <img class="avatar"
+                     src="${esc(img(u.photoFileName))}"
+                     alt="User photo">
+                <div class="comment-content">
+                  <span class="comment-date">${esc(c.date)}</span>
+                  <b>${esc(u.firstName + ' ' + u.lastName)}</b>
+                  <p class="muted">${esc(c.comment)}</p>
+                </div>
+              </div>`;
+          }).join('') : '<p class="muted">No comments yet.</p>'}
+        </div>`;
+
+      card.innerHTML = html;
+
+      if (recipe.videoFilePath) {
+        RL.videoHref(recipe).then(function (href) { document.getElementById('videoLink').href = href; });
+      }
+
+      // Favourite / like / report — same behaviour as the original AJAX buttons
+      card.querySelectorAll('.ajax-action').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var a = button.getAttribute('data-action');
+          var ok = a === 'favourite' ? RL.toggleAdd('favourites', me.id, recipeID)
+                 : a === 'like' ? RL.toggleAdd('likes', me.id, recipeID)
+                 : RL.addReport(me.id, recipeID);
+          if (ok) {
+            button.disabled = true;
+            button.textContent = button.getAttribute('data-success-text');
+            button.classList.remove('btn-outline', 'btn-danger');
+            button.classList.add(button.getAttribute('data-success-class'));
+          }
+        });
+      });
+
+      document.getElementById('commentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = this.commentText.value.trim();
+        if (text && RL.addComment(me.id, recipeID, text)) location.reload();
+      });
+    })();
+  </script>
+</body>
+</html>

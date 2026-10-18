@@ -1,112 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#d9a441">
-  <meta name="description" content="Explore Ramadan Light, a student-built recipe-sharing concept. Interactive, browser-only portfolio demo.">
-  <title>Ramadan Light | Interactive Recipe Demo</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramadan Light | Home</title>
+  <link rel="stylesheet" href="css.css" />
+  <link rel="stylesheet" href="demo.css" />
 </head>
 <body>
-  <a class="skip-link" href="#content">Skip to content</a>
-  <header class="site-header">
-    <div class="shell nav-content">
-      <a class="brand" href="#home" aria-label="Ramadan Light homepage">
-        <span class="demo-logo-icon" aria-hidden="true">☾</span>
-        <span class="brand-text"><span class="brand-name">Ramadan Light</span><small class="brand-sub">HEALTHY RECIPES</small></span>
+
+  <div class="navbar">
+    <div class="wrap nav-row">
+      <a class="brand" href="index.html">
+        <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+        <div class="brand-text">
+          <div class="brand-name">Ramadan Light</div>
+          <div class="brand-sub">HEALTHY RECIPES</div>
+        </div>
       </a>
-      <nav class="main-nav" aria-label="Demo sections">
-        <a href="#home" data-nav="home">Home</a>
-        <a href="#recipes" data-nav="recipes">Explore recipes</a>
-        <a href="#favorites" data-nav="favorites">My favourites <span class="count" id="fav-counter">0</span></a>
-        <a href="#mine" data-nav="mine">My recipes</a>
-        <a href="#moderation" data-nav="moderation">Admin preview</a>
-      </nav>
-      <a class="btn btn-forest nav-action" href="#recipes">Enter demo</a>
+
+      <div class="nav-links">
+        <a class="link" href="login.html">Login</a>
+        <a class="btn btn-primary" href="signup.html">Sign up</a>
+      </div>
     </div>
-  </header>
-  <main id="content">
-    <div class="shell"><aside class="demo-notice" role="note"><span class="demo-chip">PORTFOLIO DEMO</span><span>Explore with sample recipes. No sign-in or database; changes stay in this browser.</span><button id="reset-demo" type="button">Reset demo ↻</button></aside></div>
-    <section class="screen original-home" id="home" aria-labelledby="hero-heading">
-      <div class="hero-bg">
-        <div class="shell hero">
-          <h1 class="hero-title" id="hero-heading">Nourish Your<br>Ramadan Journey</h1>
-          <p class="hero-text">Discover wholesome ideas for <b>Iftar</b>, <b>Suhoor</b>, and <b>healthy snacks</b>.<br>Keep it light, balanced, and full of flavour.</p>
-          <div class="hero-actions">
-            <a href="#recipes" class="btn btn-forest">Explore recipes</a>
-            <a href="#create" class="btn btn-outline">Try adding a recipe</a>
+  </div>
+
+  <div class="hero-bg">
+    <div class="wrap hero">
+      <div class="hero-top">
+       
+      <h1 class="hero-title">Nourish Your<br>Ramadan Journey</h1>
+
+      <p class="hero-text">
+        Discover wholesome ideas for <b>Iftar</b>, <b>Suhoor</b>, and <b>healthy snacks</b>.
+        Keep it light, balanced, and full of flavour.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="login.html">Login</a>
+        <a class="btn btn-outline" href="signup.html">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section">
+    <h2 class="section-title">Pick your vibe</h2>
+    <p class="section-sub">Simple categories to keep your meals organised.</p>
+
+    <div class="cards">
+      <div class="card card-iftar">
+        <div class="card-icon">🌙</div>
+        <div class="card-body">
+          <h3>Iftar Recipes</h3>
+          <p>Warm, comforting meals to break your fast with energy.</p>
+          <div class="tags">
+            <span class="tag">Balanced</span>
+            <span class="tag">Family</span>
           </div>
         </div>
       </div>
-      <div class="shell original-section">
-        <h2 class="section-title">Pick your vibe</h2>
-        <p class="section-sub">Simple categories to keep your meals organised.</p>
-        <div class="original-categories">
-          <a href="#recipes" class="original-category card-iftar" data-category-link="Iftar">
-            <div class="category-symbol">🌙</div><div class="card-body">
-              <h3>Iftar Recipes</h3>
-              <p>Warm, comforting meals to break your fast with energy.</p>
-              <div class="category-tags"><span>Balanced</span><span>Family</span></div>
-            </div>
-          </a>
-          <a href="#recipes" class="original-category card-suhoor" data-category-link="Suhoor">
-            <div class="category-symbol">✨</div><div class="card-body">
-              <h3>Suhoor Ideas</h3>
-              <p>Filling, steady fuel that keeps you going during fasting.</p>
-              <div class="category-tags"><span>Protein</span><span>Quick</span></div>
-            </div>
-          </a>
-          <a href="#recipes" class="original-category card-snacks" data-category-link="Snacks">
-            <div class="category-symbol">💚</div><div class="card-body">
-              <h3>Healthy Snacks</h3>
-              <p>Light bites between Iftar and Suhoor — no heaviness.</p>
-              <div class="category-tags"><span>Light</span><span>Fresh</span></div>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-    <section class="screen dashboard-page" id="recipes" hidden aria-labelledby="recipes-heading">
-      <div class="shell userContainer">
-        <div class="userTopBar">
-          <div class="userTopLeft"><div class="demo-avatar" aria-hidden="true">☾</div>
-            <div><p class="userSecondary">Welcome back 👋</p><h1 class="userTitleMain">Demo Visitor</h1></div>
-          </div>
-          <div class="userTopRight">
-            <div class="userStatsBox"><span>Recipes</span><strong id="demo-recipes-count">5</strong></div>
-            <div class="userStatsBox"><span>Likes</span><strong id="demo-likes-count">164</strong></div>
-            <a href="#mine" class="btn btn-forest">My recipes</a>
+
+      <div class="card card-suhoor">
+        <div class="card-icon">✨</div>
+        <div class="card-body">
+          <h3>Suhoor Ideas</h3>
+          <p>Filling, steady fuel that keeps you going during fasting.</p>
+          <div class="tags">
+            <span class="tag">Protein</span>
+            <span class="tag">Quick</span>
           </div>
         </div>
-        <div class="userCard">
-          <h2>Profile</h2>
-          <div class="userInfoPills"><span><small>First name</small><strong>Demo</strong></span><span><small>Last name</small><strong>Visitor</strong></span><span><small>Account</small><strong>Browser-only preview</strong></span></div>
-        </div>
-        <div class="userCard">
-          <div class="userSectionHeader"><div><h2 id="recipes-heading">Explore recipes</h2><p>Pick a category to explore tasty options.</p></div></div>
-          <form class="filters" id="filter-form" role="search">
-            <label>Search recipes<input id="search" type="search" placeholder="Recipe name or ingredient" autocomplete="off"></label>
-            <label>Category<select id="category"><option value="all">All Categories</option><option>Iftar</option><option>Suhoor</option><option>Snacks</option></select></label>
-            <label>Sort by<select id="sort"><option value="popular">Most liked</option><option value="az">Name A–Z</option><option value="new">Newest added</option></select></label>
-          </form>
-          <p class="result-heading" id="results-count"></p>
-          <div class="recipe-grid" id="recipe-results"></div>
-        </div>
-        <div class="userCard">
-          <div class="userSectionHeader"><h2>My favourites</h2><a href="#favorites">View all →</a></div>
-          <p class="userSecondary">Your saved recipes, ready whenever you are.</p>
+      </div>
+
+      <div class="card card-snacks">
+        <div class="card-icon">💚</div>
+        <div class="card-body">
+          <h3>Healthy Snacks</h3>
+          <p>Light bites between Iftar and Suhoor — no heaviness.</p>
+          <div class="tags">
+            <span class="tag">Light</span>
+            <span class="tag">Fresh</span>
+          </div>
         </div>
       </div>
-    </section>
-    <section class="screen" id="favorites" hidden aria-labelledby="favorites-heading"><div class="shell content-section"><div class="page-heading"><span class="eyebrow">YOUR SAVED RECIPES</span><h1 id="favorites-heading">Keep the good ones close.</h1><p>Your favorites are private to this browser and can be removed anytime.</p></div><div class="recipe-grid" id="favorites-results"></div></div></section>
-    <section class="screen" id="mine" hidden aria-labelledby="mine-heading"><div class="shell content-section"><div class="page-heading"><span class="eyebrow">A LITTLE SOMETHING FROM YOU</span><h1 id="mine-heading">My recipes.</h1><p>View, edit, or delete the sample recipes you've added in this demo.</p></div><div class="recipe-grid" id="my-results"></div><div class="page-action"><a class="btn btn-forest" href="#create">+ Add a recipe</a></div></div></section>
-    <section class="screen" id="create" hidden aria-labelledby="create-heading"><div class="shell content-section"><div class="page-heading"><span class="eyebrow">SHARE A LITTLE INSPIRATION</span><h1 id="create-heading">Add a recipe.</h1><p>Try the recipe submission flow. Nothing is uploaded or shared with other visitors.</p></div><form class="recipe-form" id="recipe-form"><div class="form-grid"><label>Recipe name<input name="name" maxlength="75" required placeholder="e.g., Date & yogurt bowl"></label><label>Meal category<select name="category" required><option value="">Select category</option><option>Iftar</option><option>Suhoor</option><option>Snacks</option></select></label><label>Time to prepare (minutes)<input name="minutes" type="number" min="1" max="360" required placeholder="25"></label><label>Visual style<select name="symbol"><option value="🥗">Fresh bowl 🥗</option><option value="🍲">Warm soup 🍲</option><option value="🥙">Sandwich 🥙</option><option value="🍝">Pasta 🍝</option><option value="🍓">Snack 🍓</option></select></label><label class="wide">Short description<textarea name="description" rows="2" maxlength="250" required placeholder="What makes this dish special?"></textarea></label><label class="wide">Ingredients <small>(one per line)</small><textarea name="ingredients" rows="4" maxlength="900" required placeholder="1 cup oats&#10;2 dates&#10;1 cup milk"></textarea></label><label class="wide">Instructions <small>(one step per line)</small><textarea name="steps" rows="4" maxlength="1200" required placeholder="Combine the ingredients&#10;Mix and serve"></textarea></label></div><p class="form-notice">This demonstration does not collect email addresses, passwords, photos, or personal information. Everything remains on this device.</p><div class="form-actions"><button type="submit" class="btn btn-forest" id="submit-recipe">Publish sample recipe</button><a href="#mine" class="btn btn-outline" id="cancel-edit">Cancel</a></div></form></div></section>
-    <section class="screen" id="moderation" hidden aria-labelledby="mod-heading"><div class="shell content-section"><div class="page-heading"><span class="eyebrow">ADMIN WORKFLOW PREVIEW</span><h1 id="mod-heading">Community moderation.</h1><p>A simplified, non-authenticated preview of reviewing recipe reports. This is <strong>not</strong> the protected PHP admin dashboard.</p></div><div class="moderation-note">⚑ &nbsp; Report a sample recipe from its details page, then review it here. All flags are local to your browser.</div><div id="moderation-results" class="moderation-list"></div></div></section>
-  </main>
-  <dialog id="recipe-dialog" aria-label="Recipe details"><button type="button" class="dialog-close" id="dialog-close" aria-label="Close recipe details">×</button><div id="dialog-content"></div></dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <footer><div class="shell footer-layout"><div><div class="footer-logo">☾ Ramadan<span>Light</span></div><p>Healthy recipes, meaningful moments.</p></div><div class="footer-right"><span>COLLABORATIVE STUDENT PROJECT</span><p>Original project: PHP · MySQL · HTML · CSS · JavaScript</p></div></div><div class="shell footer-small">Portfolio preview built separately from the private team repository. Recipes and interactions are illustrative, browser-only sample data; this is not the original PHP/MySQL website.</div></footer>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="wrap footer-row">
+      <div class="footer-mark">☾</div>
+      <div>© 2026 Ramadan Light — Nourishing bodies and souls.</div>
+    </div>
+  </div>
+
 </body>
 </html>

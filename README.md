@@ -1,31 +1,67 @@
-# Ramadan Light — Interactive Portfolio Demo
+# Ramadan Light — Live Demo
 
-A separate, static interactive preview of **Ramadan Light**, a collaborative university recipe-sharing web application. This demo does **not** contain or modify the original team's private PHP/MySQL codebase.
+**Try it:** https://leen686.github.io/RamadanLight-Demo/
 
-## Demo features
+Ramadan Light is a healthy-recipe sharing web app for Ramadan — Iftar meals, Suhoor ideas and light snacks. Users share recipes, browse by category, like, favourite, comment and report recipes, and an admin moderates reported content.
 
-- Browse sample Iftar, Suhoor, and snack recipes, with search and category filters.
-- Open a recipe to see sample ingredients and preparation steps.
-- Save favorites, like recipes, and add demo comments.
-- Add, edit, and delete recipes you create in this browser.
-- Flag a recipe and try a simplified admin moderation workflow.
-- Reset all local demo interactions.
+This repository is an interactive demo of the original university project ([IT329-project](https://github.com/leen686/IT329-project)). It uses the original pages, styles and images, so it looks and works the same, but it runs entirely in the browser so anyone can try it without a server.
 
-**Important:** The recipes and content are fictional sample data used for demonstration; they are not synced with the original database. This demo does not provide genuine user authentication or a protected administration system. Browser state is saved using localStorage.
+![Home page](docs/index.jpg)
 
-## Run and deploy
+## Try it in one click
 
-Open `index.html` in a current browser. No build step is required.
+On the **Login** page, use the "Try the demo" buttons:
 
-To publish from your own separate GitHub repository:
+| Account | Email | Password |
+|---|---|---|
+| User | lina@ramadanlight.demo | demo1234 |
+| Admin | admin@ramadanlight.demo | demo1234 |
 
-1. Create a **new repository** named `RamadanLight-Demo` (do not fork the shared/private academic repository).
-2. Upload the three website files `index.html`, `styles.css`, and `app.js` to the root. You may optionally include this README.
-3. In Settings → Pages, choose **Deploy from a branch**, `main`, and `/(root)`, then Save.
-4. Once deployment succeeds, GitHub's normal project Pages link will typically be `https://<username>.github.io/RamadanLight-Demo/`. Do not advertise it until you have opened and tested the actual deployed URL.
+Or create your own account on the **Sign up** page. Everything you do is saved only in your own browser, and **Reset demo data** on the Login page restores the sample recipes.
 
-## Original academic project
+## Features
 
-Ramadan Light was developed collaboratively by a student team. The original project uses PHP, MySQL, HTML, CSS, and JavaScript, including recipe management, favorites, likes, comments, and administrative reporting functions.
+**Users**
+- Sign up (with optional profile photo) and log in
+- Dashboard with profile, recipe and like counts
+- Browse all recipes and filter by category (Iftar, Suhoor, Snacks)
+- View a recipe: ingredients, steps, video and comments
+- Like, favourite, report and comment on other people's recipes
+- My Recipes: add, edit and delete your own recipes, with photo and video upload or a video link
 
-The original repository is **private and shared with the team**. This frontend-only demo is intentionally independent; no teammate source files, private database records, or credentials have been republished here. Add verified teammate credits before publicly presenting this demo as your team's work.
+**Admin**
+- See reported recipes and either dismiss the report or block the recipe's creator
+- Blocking removes the user and their recipes and adds them to the blocked list; blocked users can't log in
+
+![User dashboard](docs/user.jpg)
+
+![Recipe page](docs/view-other.jpg)
+
+## How the demo works
+
+| | Original project | This demo |
+|---|---|---|
+| Pages and design | PHP pages, `css.css`, `css2.css` | Same markup and the same CSS files as static HTML |
+| Data | MySQL database | Sample data saved in the browser (`localStorage`) |
+| Uploads | Saved on the server | Photos saved in the browser; videos in IndexedDB |
+| Login | Server sessions, hashed passwords | Browser-only demo login — not real security |
+
+Code layout: `js/store.js` replaces the PHP/MySQL back end, `js/seed.js` holds the sample data, and each page has a small script that does what its PHP file did. The recipes, users and comments are fictional sample data.
+
+## Run locally
+
+Open `index.html` in a browser, or serve the folder (for example `python3 -m http.server`) and go to `http://localhost:8000`.
+
+## Built with
+
+HTML, CSS and JavaScript. The original project uses PHP, MySQL, HTML, CSS, JavaScript, jQuery and AJAX.
+
+## Team
+
+Ramadan Light was built as a team project for IT329 at King Saud University by:
+
+- Leen Almutairi
+- Ranem Ibrahim
+- Jana Alshehri
+- Jana Aldakheel
+- Latifah Alsaif

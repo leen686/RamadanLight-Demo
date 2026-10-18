@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Page</title>
+  <link rel="stylesheet" href="css.css">
+</head>
+
+<body>
+
+<div class="navbar">
+  <div class="wrap nav-row">
+    <a class="brand" href="admin.html">
+      <img src="images/log.png" alt="Ramadan Light logo" class="brand-logo">
+      <div class="brand-text">
+        <div class="brand-name">Ramadan Light</div>
+        <div class="brand-sub">HEALTHY RECIPES</div>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a class="btn btn-primary" href="index.html" data-signout>Sign out</a>
+    </div>
+  </div>
+</div>
+
+<div class="ad-container">
+
+  <div class="ad-welcome-text" id="welcome"></div>
+
+  <div class="ad-info-box">
+    <h2 class="ad-section-title">My Information</h2>
+    <p id="adminName"></p>
+    <p id="adminEmail"></p>
+  </div>
+
+  <div class="ad-reports-box">
+    <h2 class="ad-section-title">Reported Recipes</h2>
+    <div id="reports"></div>
+  </div>
+
+  <div class="ad-blocked-box">
+    <h2 class="ad-section-title">Blocked Users List</h2>
+    <div id="blocked"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="wrap footer-row">
+    <div class="footer-mark">☾</div>
+    <div>©️ 2026 Ramadan Light — Nourishing bodies and souls.</div>
+  </div>
+</div>
+
+<script src="js/seed.js"></script>
+<script src="js/store.js"></script>
+<script>
+(function () {
+  var esc = RL.esc, img = RL.img;
+  var admin = RL.requireUser('admin', 'Access denied. Admins only.');
+
+  document.getElementById('welcome').textContent = 'Welcome ' + admin.firstName;
+  document.getElementById('adminName').textContent = 'Name: ' + admin.firstName + ' ' + admin.lastName;
+  document.getElementById('adminEmail').textContent = 'Email address: ' + admin.emailAddress;
+
+  function renderReports() {
+    var reports = RL.db().reports.map(function (rep) {
+      var r = RL.recipe(rep.recipeID);
+      return r ? { rep: rep, recipe: r, creator: RL.user(r.userID) || {} } : null;
+    }).filter(Boolean);
+    var box = document.getElementById('reports');
+    if (!reports.length) { box.innerHTML = '<p>No reports found.</p>'; return; }
+    box.innerHTML = `
+      <table class="ad-table">
+        <tr>
+          <th>Recipe Name</th>
+          <th>Recipe Creator</th>
+          <th>Action</th>
+        </tr>
+        ${reports.map(function (x) {
+          return `
+          <tr>
+            <td>
+              <a href="viewrecipe.html?id=${x.recipe.id}" class="ad-recipe-link">
+                ${esc(x.recipe.name)}
+              </a>
+            </td>
+
+            <td>
+              <div class="ad-creator">
+                <img src="${esc(img(x.creator.photoFileName))}" alt="User photo" class="ad-user-img">
+
+                <span>
+                  ${esc(x.creator.firstName + ' ' + x.creator.lastName)}
+                </span>
+              </div>
+            </td>
+
+            <td>
+              <form class="ad-action-form" data-recipe="${x.recipe.id}" data-report="${x.rep.id}">
+
+                <label>
+                  <input type="radio" name="action_${x.rep.id}" value="block" required>
+                  Block User
+                </label>
+
+                <label>
+                  <input type="radio" name="action_${x.rep.id}" value="dismiss">
+                  Dismiss Report
+                </label>
+
+                <input type="submit" value="Submit">
+
+              </form>
+
+            </td>
+          </tr>`;
+        }).join('')}
+      </table>`;
+  }
+
+  function renderBlocked() {
+    var blocked = RL.db().blockedUsers;
+    var box = document.getElementById('blocked');
+    if (!blocked.length) { box.innerHTML = '<p>No blocked users found.</p>'; return; }
+    box.innerHTML = `
+      <table class="ad-table">
+        <tr>
+          <th>Name</th>
+          <th>Email Address</th>
+        </tr>
+        ${blocked.map(function (b) {
+          return `
+          <tr>
+            <td>
+              ${esc(b.firstName + ' ' + b.lastName)}
+            </td>
+
+            <td>
+              ${esc(b.emailAddress)}
+            </td>
+          </tr>`;
+        }).join('')}
+      </table>`;
+  }
+
+  renderReports();
+  renderBlocked();
+
+  document.getElementById('reports').addEventListener('submit', function (e) {
+    var form = e.target.closest('.ad-action-form');
+    if (!form) return;
+    e.preventDefault();
+    var checked = form.querySelector('input[type="radio"]:checked');
+    var ok = RL.handleReport(parseInt(form.getAttribute('data-report'), 10),
+                             parseInt(form.getAttribute('data-recipe'), 10),
+                             checked && checked.value);
+    if (ok) { renderReports(); renderBlocked(); } else { alert('Action failed.'); }
+  });
+})();
+</script>
+
+</body>
+</html>
